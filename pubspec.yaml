@@ -1,0 +1,7 @@
+name: suffixarray
+version: 0.0.1
+author: Hadi Moshayedi
+description: Implementation of suffix array data structure for string searching
+homepage: http://github.com/pykello/dartlang-suffixarray
+dev_dependencies:
+  unittest: any
