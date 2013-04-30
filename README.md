@@ -5,7 +5,7 @@
 ##Time and Space Complexity
 The time complexity for different operations in the current implementation are:
 
-* Create: O(N * log N), where N is length of input string
+* Create: O(N * log^2 N), where N is length of input string
 * Locate: O(P * log N + Occ), where P is length of pattern to be searched, and Occ is size of result
 * Count: O(P * log N)
 

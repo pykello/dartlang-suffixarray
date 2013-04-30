@@ -45,10 +45,11 @@ class SuffixArray {
     _initBuckets();
     _initReverseMap();
     int bucketSize = 1;
-    while (bucketSize < _data.length) {
+    while (_buckets.last != _data.length) {
       bucketSize *= 2;
       _sortByPrefixSize(bucketSize);
       _updateBuckets(bucketSize);
+      _initReverseMap();
     }
   }
   
@@ -165,7 +166,7 @@ class SuffixArray {
       }
       buckets[index] = bucketId;
     }
-    
+        
     _buckets = buckets;
   }
   
@@ -183,43 +184,27 @@ class SuffixArray {
     return hasSamePrefix;
   }
   
+  void _sortByPrefixSize(int size) {
+    _sortedSuffixes.sort((a, b) {
+      int bucket1 = _getBucket(a);
+      int bucket2 = _getBucket(b);
+      if (bucket1 != bucket2) {
+        return bucket1 < bucket2 ? -1 : 1;
+      }
+      bucket1 = _getBucket(a + size ~/ 2);
+      bucket2 = _getBucket(b + size ~/ 2);
+      if (bucket1 != bucket2) {
+        return bucket1 < bucket2 ? -1 : 1;
+      }
+      return 0;
+    });
+  }
+  
   int _getBucket(int index) {
-    if (index > _buckets.length - 1) {
-      index = _buckets.length - 1;
+    if (index > _data.length) {
+      return -1;
     }
     return _buckets[_reverseMap[index]];
-  }
-  
-  void _sortByPrefixSize(int size) {
-    List<int> bucketNextIndex = new List<int>(_buckets.last + 1);
-    
-    for (int index = 0; index < _buckets.length; index++) {
-      if (index == 0 || _buckets[index] != _buckets[index - 1]) {
-        bucketNextIndex[_buckets[index]] = index;
-      }
-    }
-    
-    for (int index = 0; index < _sortedSuffixes.length; index++) {
-      if (_sortedSuffixes[index] >= size / 2) {
-        int suffixId = _sortedSuffixes[index] - size ~/ 2;
-        int suffixPos = _reverseMap[suffixId];
-        int suffixBucket = _buckets[suffixPos];
-        int suffixNewPos = bucketNextIndex[suffixBucket];
-        
-        _swap(suffixPos, suffixNewPos);
-        
-        bucketNextIndex[suffixBucket]++;
-      }
-    }
-  }
-  
-  void _swap(int index1, int index2) {
-    int tmp = _sortedSuffixes[index1];
-    _sortedSuffixes[index1] = _sortedSuffixes[index2];
-    _sortedSuffixes[index2] = tmp;
-    
-    _reverseMap[_sortedSuffixes[index1]] = index1;
-    _reverseMap[_sortedSuffixes[index2]] = index2;
   }
   
 }
